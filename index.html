@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thiệp Thôi Nôi Bánh Mì</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Baloo 2', cursive;
+      background: linear-gradient(-45deg, #ffd6e8, #ccefff, #fff0f5);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      overflow: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 26px;
+      padding: 18px 16px 20px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      animation: popIn 1s ease, floatCard 4s ease-in-out infinite;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes floatCard {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 6px solid #ffd6e8;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 30px;
+      color: #ff5fa2;
+      margin: 10px 0 6px;
+      animation: fadeUp 1.5s ease;
+    }
+
+    h2 {
+      font-size: 22px;
+      color: #333;
+      margin: 6px 0 10px;
+      animation: fadeUp 1.8s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    p {
+      font-size: 16px;
+      color: #555;
+      margin: 6px 0;
+    }
+
+    .info {
+      background: #fff7fb;
+      border-radius: 16px;
+      padding: 14px;
+      margin: 14px 0 18px;
+      animation: fadeUp 2.2s ease;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 12px 22px;
+      background: linear-gradient(45deg, #ff7eb3, #ff758c);
+      color: white;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 16px;
+      box-shadow: 0 8px 20px rgba(255,120,170,0.4);
+      transition: transform 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Bong bóng */
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      width: 60px;
+      height: 80px;
+      background: radial-gradient(circle at 30% 30%, #fff, #ff9acb);
+      border-radius: 50%;
+      animation: floatUp linear infinite;
+      opacity: 0.8;
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      width: 2px;
+      height: 40px;
+      background: #ccc;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); }
+      to { transform: translateY(-120vh); }
+    }
+
+    /* Countdown */
+    .countdown {
+      font-size: 18px;
+      color: #ff5fa2;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    /* Toggle music */
+    .music-toggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: white;
+      border-radius: 50%;
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    audio { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="music-toggle" onclick="toggleMusic()">🎵</div>
+
+  <audio id="bgMusic" autoplay loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Bong bóng
+    for (let i = 0; i < 12; i++) {
+      const b = document.createElement('div');
+      b.className = 'balloon';
+      b.style.left = Math.random() * 100 + 'vw';
+      b.style.animationDuration = 10 + Math.random() * 10 + 's';
+      document.body.appendChild(b);
+    }
+
+    // Countdown
+    const eventDate = new Date('2026-01-31T17:30:00').getTime();
+    setInterval(() => {
+      const now = new Date().getTime();
+      const d = eventDate - now;
+      if (d <= 0) return;
+      const days = Math.floor(d / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((d / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((d / (1000 * 60)) % 60);
+      document.getElementById('countdown').innerText = `⏳ Còn ${days} ngày ${hours} giờ ${mins} phút`;
+    }, 1000);
+
+    // Music toggle
+    const music = document.getElementById('bgMusic');
+    function toggleMusic() {
+      if (music.paused) music.play(); else music.pause();
+    }
+
+    // Touch effect
+    document.addEventListener('click', e => {
+      const heart = document.createElement('div');
+      heart.innerText = '💖';
+      heart.style.position = 'absolute';
+      heart.style.left = e.clientX + 'px';
+      heart.style.top = e.clientY + 'px';
+      heart.style.animation = 'fadeUp 1s ease forwards';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 1000);
+    });
+  </script>
+
+  <div class="container">
+    <div class="card">
+      <div id="countdown" class="countdown"></div>
+      <img class="avatar" src="be.jpg" alt="Bé yêu" />
+      <h1>🎉 Bánh Mì tròn 1 tuổi 🎉</h1>
+      <h2>Thân mời</h2>
+      <p>Đến chung vui cùng bé và gia đình 💕</p>
+      <div class="info">
+        <p>📅 <b>Ngày:</b> 31 / 01 / 2026</p>
+        <p>⏰ <b>Giờ:</b> 17:30</p>
+        <p>📍 <b>Địa điểm:</b> 14 Einstein, Bình Thọ, Thủ Đức, Thành phố Hồ Chí Minh</p>
+      </div>
+
+      <p>Rất hân hạnh được đón tiếp</p>
+
+      <a class="btn" href="https://maps.app.goo.gl/oEuEBcuhGfKo73J28" target="_blank">📍 Xem bản đồ</a>
+    </div>
+  </div>
+
+</body>
+</html>
